@@ -26,7 +26,7 @@ export default async function TenantLayout({ children, params }: { children: Rea
               <div className="text-xs text-dim">{ROLE_LABEL[membership.role]}</div>
             </div>
             {me.memberships.length > 1 && (
-              <Link href="/" className="ah-btn-quiet min-h-10! px-3! text-sm!" aria-label="Trocar de organização">
+              <Link href="/" className="ah-btn-quiet px-3! text-sm!" aria-label="Trocar de organização">
                 <Icon name="switch" size={16} /> Trocar
               </Link>
             )}

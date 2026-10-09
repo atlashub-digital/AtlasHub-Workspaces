@@ -10,7 +10,7 @@ export const metadata = { title: "Visão geral" };
 const MODULE_LABEL = { workforce: "Workforce", ami: "AMI", community: "Comunidade", media: "Media" } as const;
 
 export default async function Overview({ params }: { params: Promise<{ tenant: string }> }) {
-  const { core, membership, tenantId, modules } = await tenantContext(params);
+  const { core, membership, tenantId, modules, synthetic } = await tenantContext(params);
   const now = new Date();
   const [projects, deployments, runs, approvals, expert, roles] = await Promise.all([
     core.projects(tenantId),
@@ -39,9 +39,9 @@ export default async function Overview({ params }: { params: Promise<{ tenant: s
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Kpi icon="folder" label="Projetos" value={String(projects.length)} delay={0.05} />
-        <Kpi icon="team" label="Colaboradores digitais" value={String(workers.length)} note="em sandbox" delay={0.1} />
+        <Kpi icon="team" label="Colaboradores digitais" value={String(workers.length)} note={synthetic ? "em sandbox" : undefined} delay={0.1} />
         <Kpi icon="check" label="Aprovações pendentes" value={String(pending)} delay={0.15} />
-        <Kpi icon="chart" label="Execuções recentes" value={String(runs.length)} note="dados sintéticos" delay={0.2} />
+        <Kpi icon="chart" label="Execuções recentes" value={String(runs.length)} note={synthetic ? "dados sintéticos" : undefined} delay={0.2} />
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-5 xl:grid-cols-[1.6fr_1fr]">
@@ -77,7 +77,7 @@ export default async function Overview({ params }: { params: Promise<{ tenant: s
           subtitle="O seu ponto de contacto: recebe necessidades, propõe planos e integrações."
           delay={0.2}
           action={
-            <Link href={`${base}/expert`} className="text-sm font-semibold text-cyan3 hover:text-fg">
+            <Link href={`${base}/expert`} className="inline-flex min-h-11 items-center text-sm font-semibold text-cyan3 hover:text-fg">
               Abrir →
             </Link>
           }
@@ -87,7 +87,7 @@ export default async function Overview({ params }: { params: Promise<{ tenant: s
               <Icon name="spark" size={22} />
             </span>
             <div>
-              <div className="font-semibold">{expert.enabled ? "Disponível em sandbox" : "Não provisionado"}</div>
+              <div className="font-semibold">{expert.enabled ? (synthetic ? "Disponível em sandbox" : "Disponível") : "Não provisionado"}</div>
               <div className="text-xs text-dim">Supervisão: {expert.supervisor?.displayName ?? "—"}</div>
             </div>
           </div>
@@ -108,7 +108,7 @@ export default async function Overview({ params }: { params: Promise<{ tenant: s
         className="mt-5"
         delay={0.25}
         action={
-          <Link href={`${base}/workforce`} className="text-sm font-semibold text-cyan3 hover:text-fg">
+          <Link href={`${base}/workforce`} className="inline-flex min-h-11 items-center text-sm font-semibold text-cyan3 hover:text-fg">
             Ver Workforce →
           </Link>
         }

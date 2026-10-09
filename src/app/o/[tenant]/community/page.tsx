@@ -4,7 +4,7 @@ import { tenantContext } from "@/lib/tenant";
 export const metadata = { title: "Comunidade" };
 
 export default async function Community({ params }: { params: Promise<{ tenant: string }> }) {
-  const { membership, modules } = await tenantContext(params);
+  const { membership, modules, synthetic } = await tenantContext(params);
   if (!modules.includes("community")) return <Locked module="Community" tenantName={membership.name} />;
   return (
     <>
@@ -15,7 +15,7 @@ export default async function Community({ params }: { params: Promise<{ tenant: 
           <li>Escalonamento humano obrigatório; sem conselho médico nem ações autónomas de saúde.</li>
           <li>Dados de membros nunca saem desta organização.</li>
         </ul>
-        <p className="mt-4 text-xs text-dim">Em sandbox: sem membros nem conversas reais.</p>
+        {synthetic && <p className="mt-4 text-xs text-dim">Em sandbox: sem membros nem conversas reais.</p>}
       </Panel>
     </>
   );

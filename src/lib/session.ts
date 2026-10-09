@@ -1,6 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { CoreError } from "./contract.ts";
 import { DemoCore } from "./core/demo.ts";
 import { HttpCore } from "./core/http.ts";
@@ -31,8 +31,13 @@ export async function requireCore(): Promise<Core> {
   return new HttpCore(base, token);
 }
 
-/** Maps Core errors to navigation: 401 → login; 403/404 → caller decides (notFound / locked). */
+/**
+ * Maps Core errors to navigation: 401 → login; 403/404 → 404, indistinguishable from a tenant that does not
+ * exist (membership revoked between /v1/me and the tenant call, or a tenant the caller never had). Anything
+ * else (5xx, network) is rethrown and rendered by the error boundary as "Core indisponível", never as data.
+ */
 export function onCoreError(e: unknown): never {
   if (e instanceof CoreError && e.status === 401) redirect("/login");
+  if (e instanceof CoreError && (e.status === 403 || e.status === 404)) notFound();
   throw e;
 }

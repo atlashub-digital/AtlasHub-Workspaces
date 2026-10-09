@@ -22,6 +22,14 @@ export function modulesFrom(keys: string[]): Module[] {
   return MODULES.filter((m) => set.has(m));
 }
 
+/**
+ * Synthetic means fixtures (demo mode) or a tenant the Core flags as sandbox. Anything else is presented as
+ * real data: a production tenant must never see its activity labelled as disposable test data.
+ */
+export function isSynthetic(mode: "demo" | "api", membership: { sandbox?: boolean }) {
+  return mode === "demo" || membership.sandbox === true;
+}
+
 export function membershipFor(me: Me, tenantId: string): MembershipSummary | undefined {
   return me.memberships.find((m) => m.tenantId === tenantId);
 }

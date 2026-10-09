@@ -49,7 +49,8 @@ export class HttpCore implements Core {
     return this.get<Deployment[]>(`/v1/tenants/${encodeURIComponent(tenant)}/deployments`);
   }
   runs(tenant: string, opts: { state?: RunState; deploymentId?: string; limit?: number } = {}) {
-    return this.get<Run[]>("/v1/runs", { tenant, state: opts.state, deploymentId: opts.deploymentId });
+    // The Core may ignore unknown query params or cap the page differently: slice so API mode matches demo mode.
+    return this.get<Run[]>("/v1/runs", { tenant, state: opts.state, deploymentId: opts.deploymentId, limit: opts.limit }).then((rows) => (opts.limit === undefined ? rows : rows.slice(0, opts.limit)));
   }
   approvals(tenant: string) {
     return this.get<Approval[]>("/v1/approvals", { tenant });
