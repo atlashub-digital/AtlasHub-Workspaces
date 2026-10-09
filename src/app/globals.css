@@ -1,0 +1,507 @@
+@import "tailwindcss";
+
+/* Visual Pack V1 — fontes alojadas (OFL, ver public/fonts/LICENSE-*). Mesmas do atlashub.si e app.atlashub.si. */
+@font-face { font-family: "Figtree"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/figtree-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Figtree"; font-style: normal; font-weight: 500; font-display: swap; src: url("/fonts/figtree-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Figtree"; font-style: normal; font-weight: 600; font-display: swap; src: url("/fonts/figtree-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Figtree"; font-style: normal; font-weight: 700; font-display: swap; src: url("/fonts/figtree-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Figtree"; font-style: normal; font-weight: 800; font-display: swap; src: url("/fonts/figtree-latin-800-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Semi Condensed"; font-style: normal; font-weight: 500; font-display: swap; src: url("/fonts/barlow-semi-condensed-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Semi Condensed"; font-style: normal; font-weight: 600; font-display: swap; src: url("/fonts/barlow-semi-condensed-latin-600-normal.woff2") format("woff2"); }
+
+
+/* Tokens extraídos do atlashub.si e do editions.atlashub.si (fundo azul-noite, ciano de acento). */
+@theme {
+  --color-ink: #040c18;
+  --color-chat: #050f1c;
+  --color-panel: #071422;
+  --color-panel2: #0b2034;
+  --color-line: #234257;
+  --color-line2: #355b75;
+  --color-fg: #f5f8fd;
+  --color-mute: #bbc9da;
+  --color-dim: #87a2bd;
+  --color-sys: #b9e2f2;
+  --color-accent: #16d8ed;
+  --color-accent-ink: #031020;
+  --color-warn: #f5a524;
+  --color-agent-bg: #0e3346;
+  --color-agent-line: #1e5a6e;
+  --color-user-bg: #11283d;
+  --font-sans: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-ui: "Barlow Semi Condensed", "Figtree", system-ui, sans-serif;
+  --color-cyan2: #2de5f8;
+  --color-cyan3: #40dfe9;
+  --color-ok: #7addaf;
+  --font-mono: ui-monospace, Menlo, monospace;
+}
+
+html {
+  background: var(--color-ink);
+  color: var(--color-fg);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+a {
+  color: inherit;
+}
+
+/* ───────── Visual Pack V1 — linguagem das maquetes (painel e biblioteca) para os restantes ecrãs ───────── */
+
+.ah-page {
+  background:
+    radial-gradient(1100px 600px at 85% -10%, rgba(22, 120, 190, 0.28) 0%, transparent 60%),
+    radial-gradient(800px 500px at -10% 110%, rgba(22, 216, 237, 0.06) 0%, transparent 60%),
+    var(--color-ink);
+  min-height: calc(100vh - 76px);
+}
+
+.ah-card {
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(11, 32, 52, 0.82) 0%, rgba(7, 20, 34, 0.94) 100%);
+  box-shadow: inset 0 1px 0 rgba(140, 215, 255, 0.07), 0 18px 44px rgba(0, 5, 18, 0.35);
+}
+
+.ah-card-link {
+  transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+}
+
+.ah-card-link:hover {
+  border-color: var(--color-line2);
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 rgba(140, 215, 255, 0.07), 0 18px 44px rgba(0, 5, 18, 0.4), 0 0 32px rgba(22, 216, 237, 0.14);
+}
+
+/* Título de painel com barra ciano à esquerda (como "Equipa de Agentes"). */
+.ah-bar {
+  position: relative;
+}
+
+.ah-bar::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 18px;
+  width: 3px;
+  height: 38px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, var(--color-cyan2), var(--color-accent));
+  box-shadow: 0 0 12px rgba(22, 216, 237, 0.6);
+}
+
+.ah-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-cyan3);
+}
+
+.ah-accent {
+  color: var(--color-cyan2);
+  text-shadow: 0 0 34px rgba(22, 216, 237, 0.25);
+}
+
+.ah-btn,
+.ah-btn-ghost,
+.ah-btn-quiet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-height: 44px;
+  padding: 10px 24px;
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, border-color 0.18s ease, filter 0.18s ease;
+}
+
+.ah-btn {
+  border: 1px solid transparent;
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
+  box-shadow: 0 0 24px rgba(22, 216, 237, 0.32);
+}
+
+.ah-btn:hover {
+  filter: brightness(1.07);
+  transform: translateY(-1px);
+  box-shadow: 0 0 34px rgba(22, 216, 237, 0.45);
+}
+
+.ah-btn-ghost {
+  border: 1.5px solid var(--color-accent);
+  background: rgba(4, 12, 24, 0.45);
+  color: var(--color-fg);
+}
+
+.ah-btn-ghost:hover,
+.ah-btn-quiet:hover {
+  background: rgba(22, 216, 237, 0.09);
+  border-color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.ah-btn-quiet {
+  border: 1px solid var(--color-line2);
+  background: rgba(11, 32, 52, 0.6);
+  color: var(--color-fg);
+  font-size: 16px;
+  padding: 10px 18px;
+}
+
+.ah-btn[aria-pressed="true"],
+.ah-btn-quiet[aria-pressed="true"] {
+  border-color: transparent;
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
+  box-shadow: 0 0 24px rgba(22, 216, 237, 0.32);
+}
+
+.ah-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 999px;
+  border: 1px solid var(--color-line2);
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.ah-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.ah-input {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--color-line2);
+  background: #061321;
+  color: var(--color-fg);
+  font: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ah-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(22, 216, 237, 0.15);
+}
+
+.ah-check {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-accent);
+  flex: none;
+  margin-top: 3px;
+}
+
+.ah-step {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1.5px solid var(--color-line2);
+  color: var(--color-dim);
+  background: rgba(4, 12, 24, 0.6);
+  transition: all 0.3s ease;
+}
+
+.ah-step[data-state="done"],
+.ah-step[data-state="active"] {
+  border-color: var(--color-accent);
+  color: var(--color-cyan2);
+  box-shadow: 0 0 16px rgba(22, 216, 237, 0.35), inset 0 0 10px rgba(22, 216, 237, 0.12);
+}
+
+.ah-step[data-state="active"] {
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
+  animation: ah-pulse 1.6s ease-in-out infinite;
+}
+
+.ah-step[data-state="human"] {
+  border-color: var(--color-warn);
+  color: var(--color-warn);
+  box-shadow: 0 0 14px rgba(245, 165, 36, 0.3);
+}
+
+.ah-step[data-state="skip"] {
+  border-style: dashed;
+}
+
+.ah-meter {
+  height: 6px;
+  border-radius: 6px;
+  background: #12293d;
+  overflow: hidden;
+}
+
+.ah-meter > i {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #0fb6e6, var(--color-cyan2));
+  box-shadow: 0 0 10px rgba(22, 216, 237, 0.5);
+  transition: width 0.5s ease;
+}
+
+.ah-nav-link {
+  position: relative;
+  padding: 8px 0;
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 500;
+  color: #dce6f1;
+  text-decoration: none;
+}
+
+.ah-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transition: transform 0.22s ease;
+}
+
+.ah-nav-link:hover::after,
+.ah-nav-link[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+@keyframes ah-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ah-pulse {
+  50% {
+    box-shadow: 0 0 26px rgba(22, 216, 237, 0.7);
+  }
+}
+
+.ah-rise {
+  animation: ah-rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--d, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ───────── Workspaces — shell (maquete 05 do Visual Pack V1 como referência, componentes reais) ───────── */
+
+.ws-shell {
+  display: grid;
+  grid-template-columns: 272px minmax(0, 1fr);
+  min-height: 100vh;
+  background:
+    radial-gradient(1100px 600px at 85% -10%, rgba(22, 120, 190, 0.22) 0%, transparent 60%),
+    var(--color-ink);
+}
+
+.ws-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px 16px;
+  border-right: 1px solid rgba(35, 66, 87, 0.7);
+  background: linear-gradient(180deg, rgba(7, 20, 34, 0.96), rgba(4, 12, 24, 0.98));
+}
+
+.ws-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ws-nav a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: #dce6f1;
+  font-size: 16px;
+  text-decoration: none;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.ws-nav a:hover {
+  background: rgba(22, 216, 237, 0.06);
+}
+
+.ws-nav a[aria-current="page"] {
+  border-color: rgba(22, 216, 237, 0.55);
+  background: linear-gradient(90deg, rgba(22, 120, 190, 0.55), rgba(11, 32, 52, 0.6));
+  color: #fff;
+  box-shadow: inset 3px 0 0 var(--color-accent), 0 0 22px rgba(22, 216, 237, 0.18);
+}
+
+.ws-nav a[data-locked="true"] {
+  color: var(--color-dim);
+}
+
+.ws-nav svg {
+  flex: none;
+  color: #9fc7e0;
+}
+
+.ws-nav a[aria-current="page"] svg {
+  color: var(--color-cyan2);
+}
+
+.ws-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 28px;
+  border-bottom: 1px solid rgba(35, 66, 87, 0.55);
+  background: rgba(4, 12, 24, 0.82);
+  backdrop-filter: blur(12px);
+}
+
+.ws-main {
+  min-width: 0;
+}
+
+.ws-content {
+  padding: 28px;
+  max-width: 1360px;
+}
+
+.ws-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.ws-table th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-dim);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.ws-table td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(35, 66, 87, 0.5);
+  vertical-align: top;
+}
+
+.ws-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.ws-icon-tile {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 12px;
+  border: 1px solid rgba(22, 216, 237, 0.35);
+  background: linear-gradient(160deg, rgba(22, 120, 190, 0.35), rgba(7, 20, 34, 0.8));
+  color: var(--color-cyan2);
+  box-shadow: 0 0 16px rgba(22, 216, 237, 0.18);
+}
+
+@media (max-width: 960px) {
+  .ws-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ws-sidebar {
+    min-width: 0;
+    position: static;
+    height: auto;
+    padding: 14px 16px;
+  }
+  .ws-nav {
+    flex-direction: row;
+    max-width: 100%;
+    min-width: 0;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .ws-nav a {
+    flex: none;
+    min-height: 44px;
+    font-size: 15px;
+  }
+  .ws-sidebar-foot {
+    display: none;
+  }
+  .ws-topbar,
+  .ws-content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
