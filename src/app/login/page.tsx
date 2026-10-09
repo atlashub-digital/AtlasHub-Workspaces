@@ -4,9 +4,12 @@ import { coreMode } from "@/lib/session";
 
 export const metadata = { title: "Entrar" };
 
+const WHATSAPP = `https://wa.me/5562991903462?text=${encodeURIComponent("Olá, equipa AtlasHub. Gostaria de pedir acesso ao AtlasHub Workspaces.")}`;
+
 export default async function Login({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const { error } = await searchParams;
-  const demo = coreMode() === "demo";
+  const mode = coreMode();
+  const demo = mode === "demo";
   return (
     <main className="ah-page flex min-h-screen items-center justify-center px-4 py-12">
       <div className="ah-card ah-bar ah-rise w-full max-w-[460px] p-6 sm:p-8">
@@ -18,7 +21,17 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
             {error === "credentials" ? "Email ou palavra-passe inválidos." : error === "config" ? "Login real ainda não configurado neste ambiente." : "Não foi possível iniciar a sessão."}
           </p>
         )}
-        {demo ? (
+        {mode === "off" ? (
+          <div role="status" className="mt-2">
+            <p className="text-mute">
+              O AtlasHub Workspaces está em piloto controlado. O acesso é aberto pela equipa AtlasHub a cada organização, com login individual.
+            </p>
+            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="ah-btn mt-6 w-full">
+              Pedir acesso pelo WhatsApp ↗
+            </a>
+            <p className="mt-4 text-xs text-dim">O WhatsApp abre com uma mensagem para rever e enviar. Nada é enviado automaticamente.</p>
+          </div>
+        ) : demo ? (
           <>
             <p className="mt-2 text-mute">
               Ambiente de demonstração. Escolha uma persona fictícia: cada uma só vê as organizações onde tem membership.

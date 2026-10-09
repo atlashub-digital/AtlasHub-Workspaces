@@ -3,29 +3,32 @@
 import type { Approval, Deployment, Entitlement, MembershipSummary, Project, RoleSummary, Run, RunState } from "../contract.ts";
 
 export const DEMO_TENANTS = [
-  { id: "pilot-a-sandbox", name: "Cliente-piloto A", tagline: "Comércio digital", kind: "customer" as const },
-  { id: "pilot-b-sandbox", name: "Cliente-piloto B", tagline: "Comunidade e bem-estar", kind: "internal_pilot" as const },
-  { id: "pilot-c-sandbox", name: "Cliente-piloto C", tagline: "Marca e produtos digitais", kind: "internal_pilot" as const },
+  { id: "pilot-a-sandbox", name: "Cliente-piloto A", tagline: "Comércio digital e marketing", kind: "internal_pilot" as const },
+  { id: "pilot-b-sandbox", name: "Cliente-piloto B", tagline: "Investigação e produção de conteúdo", kind: "internal_pilot" as const },
+  { id: "pilot-c-sandbox", name: "Cliente-piloto C", tagline: "Suporte, comunidade e assistência especializada", kind: "internal_pilot" as const },
+  // Isolation tests only: no projects of its own beyond a smoke project, never shown as a client.
+  { id: "atlas-synthetic-qa", name: "AtlasHub QA", tagline: "Testes de isolamento (sintético)", kind: "qa" as const },
 ];
 
 export const DEMO_USERS: Record<string, { displayName: string; email: string; memberships: Omit<MembershipSummary, "name">[] }> = {
   "demo-admin-a": { displayName: "Ana (admin · A)", email: "admin-a@example.test", memberships: [{ tenantId: "pilot-a-sandbox", role: "tenant_admin" }] },
   "demo-viewer-b": { displayName: "Bruno (leitura · B)", email: "viewer-b@example.test", memberships: [{ tenantId: "pilot-b-sandbox", role: "tenant_user" }] },
   "demo-admin-c": { displayName: "Carla (admin · C)", email: "admin-c@example.test", memberships: [{ tenantId: "pilot-c-sandbox", role: "tenant_admin" }] },
-  "demo-supervisor-1": { displayName: "Supervisor AtlasHub 1", email: "supervisor-1@example.test", memberships: [{ tenantId: "pilot-a-sandbox", role: "atlas_operator" }] },
-  "demo-supervisor-2": {
-    displayName: "Supervisora AtlasHub 2",
-    email: "supervisor-2@example.test",
+  "demo-qa": { displayName: "QA (leitura · sintético)", email: "qa@example.test", memberships: [{ tenantId: "atlas-synthetic-qa", role: "tenant_user" }] },
+  "demo-supervisor-1": {
+    displayName: "Supervisor AtlasHub 1",
+    email: "supervisor-1@example.test",
     memberships: [
+      { tenantId: "pilot-a-sandbox", role: "atlas_operator" },
       { tenantId: "pilot-b-sandbox", role: "atlas_operator" },
-      { tenantId: "pilot-c-sandbox", role: "atlas_operator" },
     ],
   },
+  "demo-supervisor-2": { displayName: "Supervisora AtlasHub 2", email: "supervisor-2@example.test", memberships: [{ tenantId: "pilot-c-sandbox", role: "atlas_operator" }] },
 };
 
 const SUPERVISOR = {
   "pilot-a-sandbox": { userId: "demo-supervisor-1", displayName: "Supervisor AtlasHub 1" },
-  "pilot-b-sandbox": { userId: "demo-supervisor-2", displayName: "Supervisora AtlasHub 2" },
+  "pilot-b-sandbox": { userId: "demo-supervisor-1", displayName: "Supervisor AtlasHub 1 (interino)" },
   "pilot-c-sandbox": { userId: "demo-supervisor-2", displayName: "Supervisora AtlasHub 2" },
 } as const;
 export const supervisorOf = (tenantId: string) => SUPERVISOR[tenantId as keyof typeof SUPERVISOR] ?? null;
@@ -57,12 +60,15 @@ const grant = (tenantId: string, key: string): Entitlement & { tenantId: string 
   status: "active",
 });
 
+// Same module sets as the Core's synthetic pilot seed (AtlasHub-AI-WaaS scripts/seed-pilots.mjs).
 export const ENTITLEMENTS: (Entitlement & { tenantId: string })[] = [
   grant("pilot-a-sandbox", "module.workforce"),
   grant("pilot-a-sandbox", "module.ami"),
   grant("pilot-b-sandbox", "module.workforce"),
-  grant("pilot-b-sandbox", "module.community"),
+  grant("pilot-b-sandbox", "module.media"),
   grant("pilot-c-sandbox", "module.workforce"),
+  grant("pilot-c-sandbox", "module.community"),
+  grant("atlas-synthetic-qa", "module.workforce"),
   // An expired trial must never unlock anything (tests rely on it).
   { tenantId: "pilot-c-sandbox", key: "module.ami", source: "trial", quantity: null, validFrom: "2026-09-01T00:00:00.000Z", validUntil: "2026-09-08T00:00:00.000Z", status: "expired" },
 ];
@@ -83,11 +89,12 @@ export const PROJECTS: Project[] = [
   p("pilot-a-sandbox", "inteligencia-mercado", "Inteligência de mercado", "Anúncios e ofertas de fontes autorizadas, com proveniência e custo por recolha.", ["ami"], []),
   p("pilot-a-sandbox", "comercio-digital", "Comércio digital", "Catálogo, encomendas e atendimento da loja.", ["workforce"], ["dep-a-005"]),
   p("pilot-a-sandbox", "operacoes-marketing", "Operações de marketing", "Calendário, campanhas e conteúdo com aprovação por peça.", ["workforce"], ["dep-a-006"]),
-  p("pilot-b-sandbox", "comunidade", "Comunidade e acompanhamento de membros", "Produto do cliente para membros; consentimento e escalonamento humano.", ["community"], []),
-  p("pilot-b-sandbox", "atendimento", "Atendimento", "Pedidos administrativos e agenda.", ["workforce"], ["dep-b-003"]),
-  p("pilot-b-sandbox", "conteudo", "Conteúdo", "Rascunhos e calendário editorial.", ["workforce"], ["dep-b-006"]),
-  p("pilot-c-sandbox", "marketing", "Marketing", "Campanhas e presença digital da marca.", ["workforce"], ["dep-c-006"]),
-  p("pilot-c-sandbox", "produtos-digitais", "Produtos digitais", "Catálogo e vendas de produtos digitais.", ["workforce"], ["dep-c-005"]),
+  p("pilot-b-sandbox", "investigacao", "Investigação", "Recolha de fontes e sínteses com referência, revistas por pessoa.", ["workforce"], ["dep-b-006"]),
+  p("pilot-b-sandbox", "producao-conteudo", "Produção de conteúdo", "Guiões, rascunhos e calendário editorial com aprovação por peça.", ["workforce", "media"], ["dep-b-003"]),
+  p("pilot-c-sandbox", "suporte", "Suporte", "Pedidos frequentes e encaminhamento para a equipa.", ["workforce"], ["dep-c-005"]),
+  p("pilot-c-sandbox", "comunidade", "Comunidade", "Espaço de membros com consentimento e escalonamento humano.", ["community"], []),
+  p("pilot-c-sandbox", "assistencia-especializada", "Assistência especializada", "Respostas revistas por especialistas; sem dados pessoais nem clínicos no sandbox.", ["workforce"], ["dep-c-003"]),
+  p("atlas-synthetic-qa", "smoke", "Smoke de isolamento", "Projeto técnico para testes A/B entre tenants.", ["workforce"], ["dep-q-003"]),
 ];
 
 const d = (id: string, tenantId: string, roleId: string, projectId: string | null): Deployment => ({
@@ -104,12 +111,14 @@ export const DEPLOYMENTS: Deployment[] = [
   d("dep-a-005", "pilot-a-sandbox", "ROLE-005", "pilot-a-sandbox:comercio-digital"),
   d("dep-a-006", "pilot-a-sandbox", "ROLE-006", "pilot-a-sandbox:operacoes-marketing"),
   d("dep-a-expert", "pilot-a-sandbox", "ROLE-EXPERT", null),
-  d("dep-b-003", "pilot-b-sandbox", "ROLE-003", "pilot-b-sandbox:atendimento"),
-  d("dep-b-006", "pilot-b-sandbox", "ROLE-006", "pilot-b-sandbox:conteudo"),
+  d("dep-b-006", "pilot-b-sandbox", "ROLE-006", "pilot-b-sandbox:investigacao"),
+  d("dep-b-003", "pilot-b-sandbox", "ROLE-003", "pilot-b-sandbox:producao-conteudo"),
   d("dep-b-expert", "pilot-b-sandbox", "ROLE-EXPERT", null),
-  d("dep-c-005", "pilot-c-sandbox", "ROLE-005", "pilot-c-sandbox:produtos-digitais"),
-  d("dep-c-006", "pilot-c-sandbox", "ROLE-006", "pilot-c-sandbox:marketing"),
+  d("dep-c-005", "pilot-c-sandbox", "ROLE-005", "pilot-c-sandbox:suporte"),
+  d("dep-c-003", "pilot-c-sandbox", "ROLE-003", "pilot-c-sandbox:assistencia-especializada"),
   d("dep-c-expert", "pilot-c-sandbox", "ROLE-EXPERT", null),
+  d("dep-q-003", "atlas-synthetic-qa", "ROLE-003", "atlas-synthetic-qa:smoke"),
+  d("dep-q-expert", "atlas-synthetic-qa", "ROLE-EXPERT", null),
 ];
 
 /** Deterministic synthetic runs, relative to `now` so screens always look current. */

@@ -5,19 +5,22 @@ import { CoreError } from "./contract.ts";
 import { DemoCore } from "./core/demo.ts";
 import { HttpCore } from "./core/http.ts";
 import type { Core } from "./core/types.ts";
+import { resolveMode, type Mode } from "./mode.ts";
 
 export const SESSION_COOKIE = "ws_session";
 export const DEMO_COOKIE = "ws_demo_user";
 
-/** demo (default): synthetic sandbox data. api: real Core via BFF (needs CORE_API_URL + Supabase login). */
-export function coreMode(): "demo" | "api" {
-  return process.env.CORE_MODE === "api" ? "api" : "demo";
+/** See ./mode.ts: demo (explicit, never on Vercel production) · api (Core + Supabase configured) · off. */
+export function coreMode(): Mode {
+  return resolveMode(process.env);
 }
 
 /** The Core client for the current request, or a redirect to /login. */
 export async function requireCore(): Promise<Core> {
   const jar = await cookies();
-  if (coreMode() === "demo") {
+  const mode = coreMode();
+  if (mode === "off") redirect("/login");
+  if (mode === "demo") {
     const user = jar.get(DEMO_COOKIE)?.value;
     if (!user) redirect("/login");
     return new DemoCore(user);

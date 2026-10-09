@@ -23,8 +23,13 @@ PLAYWRIGHT=<caminho do playwright> node scripts/visual-check.mjs http://localhos
 
 | `CORE_MODE` | Dados | Login |
 |---|---|---|
-| `demo` (omissão) | Fixtures sintéticas (`src/lib/core/fixtures.ts`), com o mesmo isolamento por membership do Core | Personas fictícias |
-| `api` | BFF → Core (`CORE_API_URL`), com o token em cookie HttpOnly | Supabase Auth (o mesmo projeto que o Core verifica por JWKS) |
+| (vazio ou outro valor) | Nenhum | Ecrã "piloto controlado" com pedido de acesso pelo WhatsApp |
+| `demo` | Fixtures sintéticas (`src/lib/core/fixtures.ts`), com o mesmo isolamento por membership do Core. **Recusado em `VERCEL_ENV=production`** | Personas fictícias |
+| `api` | BFF → Core (`CORE_API_URL` em HTTPS), com o token em cookie HttpOnly. Sem `CORE_API_URL`/`SUPABASE_*` válidos → como vazio | Supabase Auth (o mesmo projeto que o Core verifica por JWKS) |
+
+Regras em `src/lib/mode.ts` (testadas em `tests/mode.test.ts`). Para desenvolvimento: `CORE_MODE=demo npm run dev`.
+
+Tenants sintéticos (iguais aos do Core, `AtlasHub-AI-WaaS/scripts/seed-pilots.mjs`): `pilot-a-sandbox` (Workforce + AMI), `pilot-b-sandbox` (Workforce + Media), `pilot-c-sandbox` (Workforce + Comunidade), `atlas-synthetic-qa` (testes de isolamento).
 
 ## Arquitetura
 

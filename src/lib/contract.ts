@@ -6,7 +6,7 @@ export type Module = "workforce" | "ami" | "community" | "media";
 export const MODULES: readonly Module[] = ["workforce", "ami", "community", "media"];
 
 export type PlatformRole = "tenant_user" | "tenant_admin" | "atlas_operator" | "atlas_engineer" | "atlas_owner";
-export type TenantKind = "customer" | "internal_pilot" | "platform";
+export type TenantKind = "customer" | "internal_pilot" | "platform" | "qa";
 
 export interface MembershipSummary {
   tenantId: string;

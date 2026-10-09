@@ -54,6 +54,7 @@ export default async function Organizations() {
                 <p className="mt-1 text-sm text-mute">
                   {ROLE_LABEL[m.role]}
                   {m.tenantKind === "internal_pilot" && " · cliente-piloto interno"}
+                  {m.tenantKind === "qa" && " · tenant de testes sintético"}
                 </p>
               </div>
               <div className="flex flex-wrap gap-1.5">
